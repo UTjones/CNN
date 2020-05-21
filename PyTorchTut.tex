@@ -1,0 +1,155 @@
+\documentclass[12pt]{extarticle}
+%Some packages I commonly use.
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{framed}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{enumerate}
+\usepackage[utf8]{inputenc}
+\usepackage[top=1 in,bottom=1in, left=1 in, right=1 in]{geometry}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+
+%%%%%%%%%%Alows python coloring %%%%%%%%%%%%%%%%%%
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{magenta},
+	keywordstyle=\color{codegreen},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+
+\lstset{style=mystyle}
+
+
+
+%%%%%%%%%%%%%%%%%%
+
+
+
+%A bunch of definitions that make my life easier
+\newcommand{\matlab}{{\sc Matlab} }
+\newcommand{\cvec}[1]{{\mathbf #1}}
+\newcommand{\rvec}[1]{\vec{\mathbf #1}}
+\newcommand{\ihat}{\hat{\textbf{\i}}}
+\newcommand{\jhat}{\hat{\textbf{\j}}}
+\newcommand{\khat}{\hat{\textbf{k}}}
+\newcommand{\minor}{{\rm minor}}
+\newcommand{\trace}{{\rm trace}}
+\newcommand{\spn}{{\rm Span}}
+\newcommand{\rem}{{\rm rem}}
+\newcommand{\ran}{{\rm range}}
+\newcommand{\range}{{\rm range}}
+\newcommand{\mdiv}{{\rm div}}
+\newcommand{\proj}{{\rm proj}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\<}{\langle}
+\renewcommand{\>}{\rangle}
+\renewcommand{\emptyset}{\varnothing}
+\newcommand{\attn}[1]{\textbf{#1}}
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem*{definition}{Definition}
+\newtheorem*{example}{Example}
+\newtheorem*{note}{Note}
+\newtheorem{exercise}{Exercise}
+\newcommand{\bproof}{\bigskip {\bf Proof. }}
+\newcommand{\eproof}{\hfill\qedsymbol}
+\newcommand{\Disp}{\displaystyle}
+\newcommand{\qe}{\hfill\(\bigtriangledown\)}
+\setlength{\columnseprule}{1 pt}
+\newcommand{\newpara}{	\vskip 0.5cm }
+
+
+
+\title{PyTorch Useful Functions and Explanations}
+\author{Nathan Jones}
+\date{May 2020}
+
+\begin{document}
+	
+	\maketitle
+
+The following packages will all be used throughout the code to create and run our Neural Network (NN).
+	
+\begin{lstlisting}[language= Python]
+import torch 
+import torch.nn as nn
+import torchvision.transforms as transforms
+import torchvision.datasets as dsets
+import matplotlib.pylab as plt
+import numpy as np
+\end{lstlisting}
+
+\section{Useful functions to define}
+
+The functions listed here are not essential to running your CNN, but can be useful for visualizing and verifying the process. \newpara
+
+The \textbf{show\_data} function takes a data\_sample input tensor which contains a 2D numpy array as data\_sample[0] and the known data value for data\_sample[1]. E.g. data\_sample could be the 2D tensor containing a hand written digit and the second entry in data\_sample would be the known value of the hand written digit.
+
+\begin{lstlisting}[language=Python]
+def show_data(data_sample):
+	plt.imshow(data_sample[0].numpy().reshape(IMAGE_SIZE, IMAGE_SIZE), cmap='gray')
+	plt.title('y = '+ str(data_sample[1]))
+\end{lstlisting}
+
+\section{Two different convolution neural networks (CNN's)}
+
+
+\begin{lstlisting}[language=Python]
+class CNN(nn.Module):
+
+	# Contructor
+	def __init__(self, out_1=16, out_2=32):
+		super(CNN, self).__init__()
+		self.cnn1 = nn.Conv2d(in_channels=1, out_channels=out_1, kernel_size=5, padding=2)
+		self.maxpool1=nn.MaxPool2d(kernel_size=2)
+
+		self.cnn2 = nn.Conv2d(in_channels=out_1, out_channels=out_2, kernel_size=5, stride=1, padding=2)
+		self.maxpool2=nn.MaxPool2d(kernel_size=2)
+		self.fc1 = nn.Linear(out_2 * 4 * 4, 10)
+
+	# Prediction
+	def forward(self, x):
+		x = self.cnn1(x)
+		x = torch.relu(x)
+		x = self.maxpool1(x)
+		x = self.cnn2(x)
+		x = torch.relu(x)
+		x = self.maxpool2(x)
+		x = x.view(x.size(0), -1)
+		x = self.fc1(x)
+		return x
+\end{lstlisting}
+
+
+
+	
+	
+\end{document}
