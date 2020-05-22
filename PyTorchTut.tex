@@ -121,7 +121,7 @@ def show_data(data_sample):
 
 \section{Two different convolution neural networks (CNN's)}
 
-
+The first network we will build has two convolutional layers and a fully connected layer.
 \begin{lstlisting}[language=Python]
 class CNN(nn.Module):
 
@@ -148,8 +148,12 @@ class CNN(nn.Module):
 		return x
 \end{lstlisting}
 
-
-
+We will go through this code by line number explaining what it does.
+\begin{itemize}
+	\item [1] This defines out class CNN to creat our NN.  The argument nn.Module means our class CNN inherits the nn.Module class from PyTorch.nn
+	\item [4] A function that initializes the CNN module.  The arguments are self - which is required in all class defined functions, out\_1 , out\_2.  These are the output sizes of our two convolutional layers.  
+	\item [5] The super refers to the superclass
+\end{itemize}
 	
 	
 \end{document}
